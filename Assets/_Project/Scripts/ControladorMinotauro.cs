@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class ControladorMinotauro : MonoBehaviour
 {
     private NavMeshAgent MeshAgent; // En este caso, será la guía que te provee unity para que el minotauro te persiga
     private Transform transformJugador; // Con esto se toma la posición del jugador
