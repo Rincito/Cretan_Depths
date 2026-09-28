@@ -16,6 +16,9 @@ public class GeneradorLaberinto : MonoBehaviour
     [SerializeField] private GameObject prefabSalida;
     [SerializeField] private GameObject[] prefabsCaminos;
 
+    [Header("Generador de Loot")]
+    [SerializeField] private GeneradorLoot generadorLoot;
+
     // Estructura lógica del laberinto (0: Sin celda, Bitmask para N, S, E, O)
     private struct CeldaLogica
     {
@@ -34,38 +37,62 @@ public class GeneradorLaberinto : MonoBehaviour
     [ContextMenu("Re-Generar Laberinto")]
     public void GenerarLaberintoGarantizado()
     {
-        // 1. Limpiar instanciación previa
-        Transform previo = transform.Find("Laberinto_Instanciado");
-        if (previo != null) DestroyImmediate(previo.gameObject);
+        int intentosMaximos = 10;
+        int intentoActual = 0;
+        bool esValido = false;
 
-        Transform contenedorMapa = new GameObject("Laberinto_Instanciado").transform;
-        contenedorMapa.SetParent(this.transform);
+        while (!esValido && intentoActual < intentosMaximos)
+        {
+            intentoActual++;
 
-        grillaLogica = new CeldaLogica[filas, columnas];
-        matrizInstancias = new ModuloLaberinto[filas, columnas];
+            // 1. Limpiar instanciación previa
+            Transform previo = transform.Find("Laberinto_Instanciado");
+            if (previo != null) DestroyImmediate(previo.gameObject);
 
-        // 2. Crear los caminos lógicos usando DFS (Garantiza conectividad 100% sin salas cerradas)
-        GenerarCaminosDFS(0, 0);
+            Transform contenedorMapa = new GameObject("Laberinto_Instanciado").transform;
+            contenedorMapa.SetParent(this.transform);
 
-        // 3. Colocar los Prefabs correspondientes a la estructura lógica
-        InstanciarPrefabs(contenedorMapa);
+            grillaLogica = new CeldaLogica[filas, columnas];
+            matrizInstancias = new ModuloLaberinto[filas, columnas];
 
+            // 2. Crear los caminos lógicos usando DFS
+            GenerarCaminosDFS(0, 0);
+
+            AbrirCrucesDeCuatroSalidas(2);
+
+            // 3. Colocar los Prefabs
+            InstanciarPrefabs(contenedorMapa);
+
+            // 4. Validar si los prefabs colocados coinciden con la grilla
+            esValido = ValidarConectividadTotal();
+
+            if (!esValido)
+            {
+                Debug.LogWarning($"[Intento {intentoActual}] Se detectaron salas inaccesibles. Reintentando...");
+            }
+        }
+
+        if (!esValido)
+        {
+            Debug.LogError("No se pudo generar un laberinto válido tras varios intentos. Revisa las aperturas de tus Prefabs.");
+            return;
+        }
+
+        // 5. Hornear NavMesh solo si el laberinto es válido
         NavMeshSurface navMesh = GetComponent<NavMeshSurface>();
-    if (navMesh == null)
-    {
-    navMesh = gameObject.AddComponent<NavMeshSurface>();
-    }
+        if (navMesh == null)
+        {
+            navMesh = gameObject.AddComponent<NavMeshSurface>();
+        }
 
-    // Configurar para escanear SOLAMENTE a los hijos de este GameObject
-    navMesh.collectObjects = CollectObjects.Children;
-
-    // Limpiar datos previos si existían
-    navMesh.RemoveData();
-
-    // Hornear la malla dinámicamente
-    navMesh.BuildNavMesh();
-
-    Debug.Log("¡NavMesh delimitado y horneado correctamente!");
+        navMesh.collectObjects = CollectObjects.Children;
+        navMesh.RemoveData();
+        navMesh.BuildNavMesh();
+        if (generadorLoot != null)
+        {
+            generadorLoot.GenerarLootEnEscena();
+        }
+        Debug.Log("<color=green>¡NavMesh horneado con éxito!</color>");
     }
 
     // Algoritmo DFS (Depth-First Search) para laberintos perfectos
@@ -234,4 +261,133 @@ public class GeneradorLaberinto : MonoBehaviour
             lista[randomIndex] = temp;
         }
     }
+
+ public bool ValidarConectividadTotal()
+    {
+        int totalCeldas = filas * columnas;
+        HashSet<Vector2Int> visitadas = new HashSet<Vector2Int>();
+        Queue<Vector2Int> porVisitar = new Queue<Vector2Int>();
+
+        // Empezamos desde la entrada (0,0)
+        Vector2Int inicio = new Vector2Int(0, 0);
+        porVisitar.Enqueue(inicio);
+        visitadas.Add(inicio);
+
+        while (porVisitar.Count > 0)
+        {
+            Vector2Int actual = porVisitar.Dequeue();
+            // CORREGIDO: Usamos matrizInstancias en lugar de mapa
+            ModuloLaberinto moduloActual = matrizInstancias[actual.x, actual.y];
+
+            // Vector2Int.up incrementa Y (que en el mundo 3D equivale a avanzar en Z / Norte)
+            Vector2Int[] direcciones = { Vector2Int.up, Vector2Int.down, Vector2Int.right, Vector2Int.left };
+
+            foreach (var dir in direcciones)
+            {
+                Vector2Int vecino = actual + dir;
+
+                // Validar límites del mapa
+                if (vecino.x >= 0 && vecino.x < filas && vecino.y >= 0 && vecino.y < columnas)
+                {
+                    if (!visitadas.Contains(vecino))
+                    {
+                        // CORREGIDO: Usamos matrizInstancias en lugar de mapa
+                        ModuloLaberinto moduloVecino = matrizInstancias[vecino.x, vecino.y];
+
+                        // Comprobar si hay paso entre el módulo actual y el vecino
+                        if (HayConexionValida(moduloActual, moduloVecino, dir))
+                        {
+                            visitadas.Add(vecino);
+                            porVisitar.Enqueue(vecino);
+                        }
+                    }
+                }
+            }
+        }
+
+        bool todoConectado = (visitadas.Count == totalCeldas);
+
+        if (todoConectado)
+        {
+            Debug.Log($"<color=green>✓ LABERINTO VÁLIDO:</color> Las {totalCeldas} celdas son accesibles.");
+        }
+        else
+        {
+            Debug.LogWarning($"<color=red>✗ ALERTA DE SALA CERRADA:</color> Solo se puede acceder a {visitadas.Count} de {totalCeldas} celdas.");
+        }
+
+        return todoConectado;
+    }
+
+private bool HayConexionValida(ModuloLaberinto origen, ModuloLaberinto destino, Vector2Int direccion)
+    {
+        if (origen == null || destino == null) return false;
+
+        // Evaluamos si el módulo origen tiene salida hacia esa dirección considerando su rotación
+        bool origenTieneSalida = EvaluarSalida(origen, (int)origen.transform.eulerAngles.y, DireccionAVector(direccion));
+        bool destinoTieneSalida = EvaluarSalida(destino, (int)destino.transform.eulerAngles.y, DireccionAVector(-direccion));
+
+        return origenTieneSalida && destinoTieneSalida;
+    }
+
+    private Vector3 DireccionAVector(Vector2Int dir)
+    {
+        if (dir == Vector2Int.up) return Vector3.forward;
+        if (dir == Vector2Int.down) return Vector3.back;
+        if (dir == Vector2Int.right) return Vector3.right;
+        if (dir == Vector2Int.left) return Vector3.left;
+        return Vector3.zero;
+    }
+private void AbrirCrucesDeCuatroSalidas(int cantidadDeseada)
+{
+    List<Vector2Int> candidatosCruce = new List<Vector2Int>();
+
+    // 1. Buscar celdas interiores que no estén en el borde y tengan espacio en los 4 lados
+    for (int x = 1; x < filas - 1; x++)
+    {
+        for (int z = 1; z < columnas - 1; z++)
+        {
+            // Contamos cuántas conexiones activas tiene actualmente la celda
+            int conexiones = 0;
+            if (grillaLogica[x, z].norte) conexiones++;
+            if (grillaLogica[x, z].sur) conexiones++;
+            if (grillaLogica[x, z].este) conexiones++;
+            if (grillaLogica[x, z].oeste) conexiones++;
+
+            // Si ya tiene 2 o 3 salidas, es un excelente candidato para convertirse en un cruce de 4
+            if (conexiones >= 2)
+            {
+                candidatosCruce.Add(new Vector2Int(x, z));
+            }
+        }
+    }
+
+    // 2. Mezclar la lista de candidatos
+    DesordenarLista(candidatosCruce);
+
+    int crucesCreados = 0;
+
+    // 3. Convertir solo la cantidad especificada en cruces de 4 salidas
+    foreach (Vector2Int pos in candidatosCruce)
+    {
+        if (crucesCreados >= cantidadDeseada) break;
+
+        int x = pos.x;
+        int z = pos.y;
+
+        // Abrimos las 4 salidas en la celda lógica
+        grillaLogica[x, z].norte = true;
+        grillaLogica[x, z].sur = true;
+        grillaLogica[x, z].este = true;
+        grillaLogica[x, z].oeste = true;
+
+        // También debemos abrir la conexión correspondiente en sus 4 vecinos
+        grillaLogica[x, z + 1].sur = true; // Vecino Norte
+        grillaLogica[x, z - 1].norte = true; // Vecino Sur
+        grillaLogica[x + 1, z].oeste = true; // Vecino Este
+        grillaLogica[x - 1, z].este = true;  // Vecino Oeste
+
+        crucesCreados++;
+    }
+}
 }

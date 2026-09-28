@@ -14,24 +14,22 @@ public class PuertaSalida : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             
-            if (GameManager.instancia != null)
-            {
-                int puntajeFinal = GameManager.instancia.ObtenerPuntaje() ;
+            if (GameManager.instancia.PuedeEscapar())
+                {
+                    // Descuenta los 20 puntos y nos devuelve el sobrante para el menú final
+                    int puntajeFinal = GameManager.instancia.CobrarPeajeYObtenerPuntajeFinal();
 
-                // Se guarda el puntaje en la memoria interna con la clave "PuntajeFinal"
-                PlayerPrefs.SetInt("PuntajeFinal", puntajeFinal);
-                PlayerPrefs.Save(); // Asegura que se guarde de inmediato
-            }
+                    PlayerPrefs.SetInt("PuntajeFinal", puntajeFinal);
+                    PlayerPrefs.Save(); 
 
-            Cursor.lockState = CursorLockMode.None; // Se activa el cursor
-
-            // Salta a la pantalla de ganar
-            SceneManager.LoadScene(escenaVictoria);
-        }
-        else if (other.CompareTag("Enemy"))
-        {   
-            // Destruimos por completo al minotauro de la escena
-            Destroy(other.gameObject); 
+                    Cursor.lockState = CursorLockMode.None; // Liberar el cursor
+                    SceneManager.LoadScene(escenaVictoria);
+                }
+                else
+                {
+                    Debug.Log("No tienes suficientes puntos para pagar el peaje de salida.");
+                }
         }
     }
 }
+

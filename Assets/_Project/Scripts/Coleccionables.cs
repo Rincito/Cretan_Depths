@@ -30,11 +30,7 @@ public class Coleccionables : MonoBehaviour
     {
         // Los objetos van a girar en el laberinto para hacerlo más llamativo
         
-        if (tipoDeObjeto == TipoColeccionable.Moneda)
-        {
-            transform.Rotate(Vector3.right * velocidadRotacion * Time.deltaTime); // Multiplicamos por Time.deltaTime para que la rotación sea suave y dependa del tiempo real, no de los FPS de la computadora
-        }
-        else if (tipoDeObjeto == TipoColeccionable.Cofre || tipoDeObjeto == TipoColeccionable.Espada)
+        if (tipoDeObjeto == TipoColeccionable.Moneda || tipoDeObjeto == TipoColeccionable.Cofre || tipoDeObjeto == TipoColeccionable.Espada)
         {
             transform.Rotate(Vector3.up * velocidadRotacion * Time.deltaTime);
         }
@@ -45,22 +41,12 @@ public class Coleccionables : MonoBehaviour
     {   
         if (other.CompareTag("Player")) // Si el objeto que pasa tiene la etique o tag "Player" se activa, evitando que el minotauro "robe" puntuación
         {
-            // Si es  una moneda o un cofre sumamos puntos de forma normal
-            if (tipoDeObjeto == TipoColeccionable.Moneda || tipoDeObjeto == TipoColeccionable.Cofre)
-            {
+            
                 if (GameManager.instancia != null) // Pedimos al GameManager que se encargue de este proceso, ya que es la "mente" del programa por así decirlo
                 {
                     GameManager.instancia.SumarPuntos(valorPuntos);
                 }
-            }
-            // Si es una espada activamos la invulnerabilidad en el GameManager
-            else if (tipoDeObjeto == TipoColeccionable.Espada)
-            {
-                if (GameManager.instancia != null)
-                {
-                    GameManager.instancia.ActivarInvulnerabilidad();
-                }
-            }
+            
 
             // Destruimos el objeto recolectado, sea cual sea
             Destroy(gameObject);

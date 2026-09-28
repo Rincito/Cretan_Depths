@@ -3110,7 +3110,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.6
-  m_Speed: 2.5
+  m_Speed: 1.8
   m_Acceleration: 5
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -3138,6 +3138,7 @@ MonoBehaviour:
   tiempoEntreAtaques: 2
   Caminar: walk_forward
   Golpear: attack1
+  puertaDeSalida: {fileID: 8188346423341614611, guid: 8fde5ff6b2880c340b8128d37b414244, type: 3}
 --- !u!136 &4696454713721564174
 CapsuleCollider:
   m_ObjectHideFlags: 0
