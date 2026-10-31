@@ -14,8 +14,6 @@ public class GeneradorLoot : MonoBehaviour
 
     private void Start()
     {
-        // Si tu mapa se genera por código en Start(), podés llamar a esto desde ahí
-        // o usar una pequeña espera si los prefabs se instancian en el primer frame.
         GenerarLootEnEscena();
     }
 

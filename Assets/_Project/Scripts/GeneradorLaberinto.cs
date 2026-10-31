@@ -77,14 +77,14 @@ public class GeneradorLaberinto : MonoBehaviour
             Debug.LogError("No se pudo generar un laberinto válido tras varios intentos. Revisa las aperturas de tus Prefabs.");
             return;
         }
-
+        
         // 5. Hornear NavMesh solo si el laberinto es válido
         NavMeshSurface navMesh = GetComponent<NavMeshSurface>();
         if (navMesh == null)
         {
             navMesh = gameObject.AddComponent<NavMeshSurface>();
         }
-
+        ActivarEstatuaAleatoria();
         navMesh.collectObjects = CollectObjects.Children;
         navMesh.RemoveData();
         navMesh.BuildNavMesh();
@@ -94,6 +94,30 @@ public class GeneradorLaberinto : MonoBehaviour
         }
         Debug.Log("<color=green>¡NavMesh horneado con éxito!</color>");
     }
+
+    private void ActivarEstatuaAleatoria()
+{
+    // Busca todas las estatuas que ya están puestas en los prefabs del laberinto generado
+    EstatuaDivina[] todasLasEstatuas = FindObjectsOfType<EstatuaDivina>();
+
+    if (todasLasEstatuas.Length > 0)
+    {
+        // Elige una al azar de todas las que hay en el mapa
+        int indiceAleatorio = Random.Range(0, todasLasEstatuas.Length);
+        EstatuaDivina estatuaElegida = todasLasEstatuas[indiceAleatorio];
+
+        // Configuramos el poder según el nivel (Nivel 1 = Correr sí o sí)
+        string poderAElegir = "Correr";
+        int costo = 15;
+
+        // Activamos esa estatua específica (esto le prende la luz cian y la habilita)
+        estatuaElegida.ActivarEstatuaConPoder(poderAElegir, costo);
+    }
+    else
+    {
+        Debug.LogWarning("No se encontraron estatuas en el laberinto.");
+    }
+}
 
     // Algoritmo DFS (Depth-First Search) para laberintos perfectos
     private void GenerarCaminosDFS(int x, int z)
@@ -276,10 +300,7 @@ public class GeneradorLaberinto : MonoBehaviour
         while (porVisitar.Count > 0)
         {
             Vector2Int actual = porVisitar.Dequeue();
-            // CORREGIDO: Usamos matrizInstancias en lugar de mapa
             ModuloLaberinto moduloActual = matrizInstancias[actual.x, actual.y];
-
-            // Vector2Int.up incrementa Y (que en el mundo 3D equivale a avanzar en Z / Norte)
             Vector2Int[] direcciones = { Vector2Int.up, Vector2Int.down, Vector2Int.right, Vector2Int.left };
 
             foreach (var dir in direcciones)
@@ -291,7 +312,7 @@ public class GeneradorLaberinto : MonoBehaviour
                 {
                     if (!visitadas.Contains(vecino))
                     {
-                        // CORREGIDO: Usamos matrizInstancias en lugar de mapa
+                        
                         ModuloLaberinto moduloVecino = matrizInstancias[vecino.x, vecino.y];
 
                         // Comprobar si hay paso entre el módulo actual y el vecino
