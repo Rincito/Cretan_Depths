@@ -26,10 +26,9 @@ public class ControladorMinotauro : MonoBehaviour
     [SerializeField] private float tiempoEsperaPuntoPatrulla = 2.0f;
 
     [Header("Configuración de Ataque")]
-    // Distancia a la que el Minotauro suelta el golpe
     [SerializeField] private float distanciaAtaque = 2.5f; 
-    // Tiempo de espera entre golpes para que no ataque infinitamente por segundo
     [SerializeField] private float tiempoEntreAtaques = 1.5f; 
+    [SerializeField] private Collider colliderAtaque; // Arrastra aquí el collider de la mano/arma desde Unity
     private float cronometroAtaque;
 
     [Header("Animaciones")] // Animaciones que ya venían incluidas con el minotauro, yo solo pongo su nombre para identificarlas
@@ -244,39 +243,63 @@ public class ControladorMinotauro : MonoBehaviour
     // Esto es una función especial que puede pausar el la ejecución del código por la cantidad que se ponga en "yield return"
     System.Collections.IEnumerator EsperarImpactoDelGolpe()
     {
-        estaAtacando = true; // Bloquea el Update() para que la animación termine sí o sí
+        estaAtacando = true; 
 
-        // Rotar levemente hacia el jugador al inicio del golpe
+        // Rotar hacia el jugador al inicio
         if (transformJugador != null)
         {
             Vector3 direccion = (transformJugador.position - transform.position).normalized;
             direccion.y = 0;
             if (direccion != Vector3.zero)
-                transform.rotation = Quaternion.LookRotation(direccion);
+              transform.rotation = Quaternion.LookRotation(direccion);
         }
 
-        // Se "pausa" el código para que termine la animación de ataque y luego nos mate, en este caso 0.8 (Se fue ajustando a medida de varias pruebas)
-        yield return new WaitForSeconds(1f);
+        // Opcional: Pequeña pausa hasta que el minotauro levante los brazos (puedes ajustarlo según tu animación)
+        yield return new WaitForSeconds(0.3f); 
 
-        if (transformJugador != null)
+        // ----------------------------------------------------
+        // VENTANA DE IMPACTO: Activamos el Collider de la mano/arma
+        // ----------------------------------------------------
+        if (colliderAtaque != null) 
         {
-            float distanciaEnImpacto = Vector3.Distance(transform.position, transformJugador.position);
-
-            // Si el jugador se movió rápido y ya no está en el rango de ataque el ataque falla
-            if (distanciaEnImpacto > distanciaAtaque)
-            {
-                MeshAgent.isStopped = false; 
-                estaAtacando = false; // Desbloquea la IA para que vuelva a perseguir/patrullar
-                animacionActual = "";
-                // Rompemos la corrutina para evitar que mate el jugador
-                yield break; 
-            }
+            colliderAtaque.enabled = true;
+            Debug.Log("¡Colisionador de ataque activado!");
         }
+        else
+        {
+            Debug.LogError("¡El collider de ataque es NULL! Revisa la asignación en el Inspector.");
+        }
+        // Esperamos el resto de la animación de golpe
+        yield return new WaitForSeconds(0.7f); 
 
-        // Pasado ese tiempo, se ejecuta el daño real, llevándonos a la pantalla de muerte
-        SceneManager.LoadScene("PantallaMuerte"); 
+        // Desactivamos el collider al terminar el golpe
+        if (colliderAtaque != null) colliderAtaque.enabled = false;
+
+        MeshAgent.isStopped = false; 
+        estaAtacando = false; 
+        animacionActual = "";
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("¡El hacha tocó a: " + other.gameObject.name + " con tag: " + other.tag + "!");
+        
+        if (estaAtacando && other.CompareTag("Player"))
+    {
+        Debug.Log("¡Golpe confirmado por el colisionador de: " + gameObject.name + "!");
+        SceneManager.LoadScene("PantallaMuerte");
+    }
     } 
- 
+/*
+    private void OnTriggerEnter(Collider other)
+{
+    // Verificamos si el minotauro está atacando y si chocó contra el jugador
+    if (estaAtacando && other.CompareTag("Player"))
+    {
+        // Aquí ejecutas la muerte o el daño
+        SceneManager.LoadScene("PantallaMuerte");
+    }
+}
+*/ 
     // ----------------------------------------------------
     // NAVEGACIÓN Y PATRULLA
     // ----------------------------------------------------

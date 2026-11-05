@@ -1257,6 +1257,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ColumnBig_001 (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 294096222662239958, guid: be30b18102142cd478a9056b86260054, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 1107611009643805804, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.54304826
@@ -1540,6 +1544,10 @@ PrefabInstance:
     - target: {fileID: 294096222662239958, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_Name
       value: ColumnBig_001 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 294096222662239958, guid: be30b18102142cd478a9056b86260054, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 1107611009643805804, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_LocalScale.x

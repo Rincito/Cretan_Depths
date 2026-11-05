@@ -2011,6 +2011,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ColumnBig_001 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 294096222662239958, guid: be30b18102142cd478a9056b86260054, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 1107611009643805804, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.53318435
@@ -2085,6 +2089,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ColumnBig_001 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 294096222662239958, guid: be30b18102142cd478a9056b86260054, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 1107611009643805804, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.53318435
@@ -2135,6 +2143,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1107611009643805804, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2364957186499648179, guid: be30b18102142cd478a9056b86260054, type: 3}
+      propertyPath: m_Convex
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

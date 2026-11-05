@@ -1731,10 +1731,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3626051958716857363, guid: b432b157871640446b1fd77428148393, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3626051958716857363, guid: b432b157871640446b1fd77428148393, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.2500012
+      objectReference: {fileID: 0}
+    - target: {fileID: 3626051958716857363, guid: b432b157871640446b1fd77428148393, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.922
+      objectReference: {fileID: 0}
     - target: {fileID: 6596695979334878536, guid: b432b157871640446b1fd77428148393, type: 3}
       propertyPath: m_Name
       value: Minotauro
       objectReference: {fileID: 0}
+    - target: {fileID: 7034586336588601068, guid: b432b157871640446b1fd77428148393, type: 3}
+      propertyPath: estadoActual
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7034586336588601068, guid: b432b157871640446b1fd77428148393, type: 3}
+      propertyPath: colliderAtaque
+      value: 
+      objectReference: {fileID: 51007419881051399}
     - target: {fileID: 7034586336588601068, guid: b432b157871640446b1fd77428148393, type: 3}
       propertyPath: distanciaAtaque
       value: 4
@@ -1744,12 +1764,20 @@ PrefabInstance:
       value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7034586336588601068, guid: b432b157871640446b1fd77428148393, type: 3}
+      propertyPath: capaParedes.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 7034586336588601068, guid: b432b157871640446b1fd77428148393, type: 3}
       propertyPath: velocidadPersecucion
       value: 3.3
       objectReference: {fileID: 0}
     - target: {fileID: 7034586336588601068, guid: b432b157871640446b1fd77428148393, type: 3}
       propertyPath: tiempoEsperaPuntoPatrulla
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8965972735982467236, guid: b432b157871640446b1fd77428148393, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1758,6 +1786,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6596695979334878536, guid: b432b157871640446b1fd77428148393, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4321071711408262781}
+    - targetCorrespondingSourceObject: {fileID: 8965972735982467236, guid: b432b157871640446b1fd77428148393, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 51007419881051399}
   m_SourcePrefab: {fileID: 100100000, guid: b432b157871640446b1fd77428148393, type: 3}
 --- !u!4 &1394202013332466604 stripped
 Transform:
@@ -1790,6 +1821,32 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   objetivoJugador: {fileID: 0}
+--- !u!1 &7453107985229502501 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8965972735982467236, guid: b432b157871640446b1fd77428148393, type: 3}
+  m_PrefabInstance: {fileID: 1946481422502535297}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &51007419881051399
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7453107985229502501}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 0.7748356, y: 1.0171229, z: 1}
+  m_Center: {x: 0.08804417, y: -0.04191166, z: -0.13999999}
 --- !u!1001 &3350936982318823328
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1801,6 +1858,10 @@ PrefabInstance:
     - target: {fileID: 294096222662239958, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_Name
       value: ColumnBig_001 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 294096222662239958, guid: be30b18102142cd478a9056b86260054, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 1107611009643805804, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_LocalScale.x
@@ -2455,6 +2516,10 @@ PrefabInstance:
     - target: {fileID: 294096222662239958, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_Name
       value: ColumnBig_001 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 294096222662239958, guid: be30b18102142cd478a9056b86260054, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 1107611009643805804, guid: be30b18102142cd478a9056b86260054, type: 3}
       propertyPath: m_LocalScale.x
