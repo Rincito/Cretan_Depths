@@ -779,11 +779,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Mu\xE9vete y junta todas las monedas y cofres que puedas antes de que
-    el tiempo termine y el  minotauro sea liberado. Consigue la puntuaci\xF3n m\xE1s
-    alta y sal del laberinto.\n\n\nLEYENDA: Se rumorea que en lo profundo del laberinto
-    existe un camino oculto que resguarda una espada m\xEDstica. Quien la empu\xF1e
-    revertir\xE1 la cacer\xEDa... y obtendr\xE1 una bonificaci\xF3n legendaria."
+  m_text: "Explora el laberinto y sobrevive: Mu\xE9vete con libertad por los pasillos
+    y recolecta todas las dracmas posibles mientras evitas al Minotauro. Consigue
+    la puntuaci\xF3n m\xE1s alta y encuentra la salida antes de que sea demasiado
+    tarde.\n\nBendiciones Divinas: Busca las estatuas sagradas repartidas en el mapa.
+    Si juntas las dracmas necesarias, podr\xE1s interactuar con ellas para obtener
+    poderes legendarios.\n\nOBJETIVO: Mant\xE9n la concentraci\xF3n, sobrevive al
+    acoso constante de la bestia y logra escapar del laberinto con el mayor tesoro
+    posible."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 471d99f7c8819ba45ac582c53a2e6d44, type: 2}
   m_sharedMaterial: {fileID: -8584724843235195285, guid: 471d99f7c8819ba45ac582c53a2e6d44, type: 2}

@@ -107,7 +107,7 @@ public class GeneradorLaberinto : MonoBehaviour
         EstatuaDivina estatuaElegida = todasLasEstatuas[indiceAleatorio];
 
         // Configuramos el poder según el nivel (Nivel 1 = Correr sí o sí)
-        string poderAElegir = "Correr";
+        string poderAElegir = "Botas de Hermes";
         int costo = 15;
 
         // Activamos esa estatua específica (esto le prende la luz cian y la habilita)
