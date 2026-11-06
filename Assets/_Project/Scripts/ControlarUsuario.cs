@@ -164,8 +164,8 @@ public float ObtenerPorcentajeCooldown()
         return Mathf.Clamp01(timerCooldown / tiempoCooldown);
     }
 
-    // Si ya está listo para usarse de nuevo, el círculo queda vacío (0) o lleno (1) para indicar disponibilidad
-    return 0f;
+    // Si ya está listo para usarse, devolvemos 1f (lleno) para que el ícono permanezca visible en todo momento
+    return 1f;
 }
 
 }

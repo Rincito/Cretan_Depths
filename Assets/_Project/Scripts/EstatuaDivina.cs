@@ -1,28 +1,45 @@
 using UnityEngine;
-using TMPro; 
+using TMPro;
+using System.Collections; 
 
 public class EstatuaDivina : MonoBehaviour
 {
     [Header("Configuración de la Estatua")]
-    [SerializeField] private string nombrePoder = "Correr"; 
+    [SerializeField] private string nombrePoder = "Botas de Hermes"; 
     [SerializeField] private int costoDracmas = 15;
-    [SerializeField] private float multiplicadorPoder = 1.5f; 
+    [SerializeField] private float multiplicadorPoder = 1.5f;
+    [SerializeField] private float distanciaInteraccion = 4.0f; 
 
     [Header("Efecto Visual (Aura / Luz)")]
     [SerializeField] private GameObject luzOAuraCian;
+
+    [Header("Configuración de Texto Flotante (World Space)")]
+    [SerializeField] private GameObject objetoCanvasFlotante; // El Canvas flotante sobre la estatua
+    [SerializeField] private TextMeshProUGUI textoFlotante;    // El componente de texto
 
     [Header("Configuración de Nivel")]
     [SerializeField] private bool esNivelUno = true; 
 
     private bool esActivaEnEstaPartida = false;
-    private bool jugadorCerca = false;
     private bool poderComprado = false;
+    private Transform transformJugador;
 
     void Start()
     {
         if (luzOAuraCian != null)
         {
             luzOAuraCian.SetActive(esActivaEnEstaPartida);
+        }
+
+        if (objetoCanvasFlotante != null)
+        {
+            objetoCanvasFlotante.SetActive(false);
+        }
+
+        GameObject jugador = GameObject.FindWithTag("Player");
+        if (jugador != null)
+        {
+            transformJugador = jugador.transform;
         }
     }
 
@@ -45,9 +62,32 @@ public class EstatuaDivina : MonoBehaviour
 
     void Update()
     {
-        if (esActivaEnEstaPartida && jugadorCerca && !poderComprado && Input.GetKeyDown(KeyCode.E))
+        if (!esActivaEnEstaPartida || poderComprado || transformJugador == null) return;
+
+        float distancia = Vector3.Distance(transform.position, transformJugador.position);
+
+        if (distancia <= distanciaInteraccion)
         {
-            IntentarComprarBendicion();
+            // El jugador entró en el radio: mostramos el texto flotante
+            if (objetoCanvasFlotante != null && !objetoCanvasFlotante.activeSelf)
+            {
+                objetoCanvasFlotante.SetActive(true);
+                textoFlotante.text = $"Consigue {costoDracmas} dracmas para obtener las {nombrePoder}\n[Presiona E]";
+            }
+
+            // Si presiona E dentro de este radio, intenta comprar
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                IntentarComprarBendicion();
+            }
+        }
+        else
+        {
+            // Si el jugador se aleja de la distancia configurada, ocultamos el texto
+            if (objetoCanvasFlotante != null && objetoCanvasFlotante.activeSelf)
+            {
+                objetoCanvasFlotante.SetActive(false);
+            }
         }
     }
 
@@ -65,12 +105,32 @@ public class EstatuaDivina : MonoBehaviour
                 
                 if (luzOAuraCian != null) luzOAuraCian.SetActive(false);
 
+                // Cambiar texto flotante a la bendición conseguida
+                if (textoFlotante != null)
+                {
+                    textoFlotante.text = "Has sido bendecido con las Botas de Hermes";
+                }
+                StartCoroutine(OcultarTextoTrasEspera(5f));
                 Debug.Log("¡Bendición recibida: " + nombrePoder + "!");
             }
             else
             {
-                Debug.Log("No tienes suficientes dracmas para esta bendición.");
+                Debug.Log("No tienes suficientes dracmas para esta bendición");
+                if (textoFlotante != null)
+                {
+                    textoFlotante.text = "No tienes suficientes dracmas";
+                }
             }
+        }
+    }
+
+    IEnumerator OcultarTextoTrasEspera(float segundos)
+    {
+        yield return new WaitForSeconds(segundos);
+
+        if (objetoCanvasFlotante != null)
+        {
+            objetoCanvasFlotante.SetActive(false);
         }
     }
 
@@ -83,7 +143,7 @@ public class EstatuaDivina : MonoBehaviour
 
         if (movimiento != null)
         {
-            if (nombrePoder == "Correr")
+            if (nombrePoder == "Botas de Hermes")
             {
                 movimiento.tienePoderCorrer = true; // Desbloquea el uso de Shift
                 
@@ -94,20 +154,4 @@ public class EstatuaDivina : MonoBehaviour
     }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            jugadorCerca = true;
-            Debug.Log("Presiona E para comprar la bendición de " + nombrePoder + " por " + costoDracmas + " dracmas.");
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            jugadorCerca = false;
-        }
-    }
 }

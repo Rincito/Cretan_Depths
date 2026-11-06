@@ -1172,6 +1172,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0159a5dfe16de0e4ea1f1bfee2d86f05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDHabilidad
+  spriteInactivo: {fileID: 21300000, guid: 490ec901dd5254249bc39cac8ed9a739, type: 3}
+  spriteActivo: {fileID: 21300000, guid: adf9d719fb8c0834d8b80201513ccb5d, type: 3}
 --- !u!1001 &232982323
 PrefabInstance:
   m_ObjectHideFlags: 0
